@@ -3,10 +3,12 @@ package dev.manubouzas.owtchallenge.boat;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@PreAuthorize("hasRole('USER')")
 @RestController
 @RequestMapping("/api/boats")
 public class BoatController {
