@@ -1,5 +1,7 @@
 package dev.manubouzas.owtchallenge.auth;
 
+import dev.manubouzas.owtchallenge.boat.Boat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -21,9 +23,11 @@ public class AuthController {
     public AuthController(JwtEncoder encoder) {
         this.encoder = encoder;
     }
+    // Define JwtResponse as a static record
+    public static record JwtResponse(String token) {}
 
     @PostMapping("")
-    public String auth(Authentication authentication) {
+    public ResponseEntity<JwtResponse> auth(Authentication authentication) {
         Instant now = Instant.now();
         long expiry = 36000L;
         String scope = authentication.getAuthorities().stream()
@@ -36,7 +40,9 @@ public class AuthController {
                 .subject(authentication.getName())
                 .claim("scope", scope)
                 .build();
-        return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+         return ResponseEntity.ok(new JwtResponse(this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue()));
     }
+
+
 
 }
