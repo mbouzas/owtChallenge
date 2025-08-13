@@ -1,5 +1,6 @@
 package dev.manubouzas.owtchallenge.boat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -38,10 +39,12 @@ public class Boat {
     @NotNull (message = "Type cannot be null")// Ensures type is not null
     private BoatType type;
 
-    @Column(nullable = false, updatable = false) // Cannot be null and never updated after creation
+    @Column(nullable = false, updatable = false)// Cannot be null and never updated after creation
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private OffsetDateTime createdAt;
 
-    @Column(nullable = false) // Cannot be null, can be updated
+    @Column(nullable = false)// Cannot be null, can be updated
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private OffsetDateTime updatedAt;
 
     // Lifecycle callbacks
