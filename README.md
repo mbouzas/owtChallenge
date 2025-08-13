@@ -134,6 +134,5 @@ The backend will be available at `http://localhost:8080`.
 
 ## Notes
 
-- Lombok is used for model boilerplate.
-- JWT secret and user details are for demo only.
+- Lombok is used to reduce boilerplate code in Java models and other classes.
 
