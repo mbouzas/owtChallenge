@@ -93,5 +93,5 @@ mvn test
 ## Notes
 
 - Lombok is used for model boilerplate.
-- JWT secret and user details are for demo only; update for production use.
+- JWT secret and user details are for demo only.
 
