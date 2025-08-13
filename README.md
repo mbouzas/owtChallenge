@@ -37,6 +37,7 @@ A simple REST API for managing boats, secured with JWT authentication using Spri
 4. **Database**
     -  By default, uses H2 in-memory DB.
     -  Data is loaded from `src/main/resources/data.sql`.
+    -  The schema.sql file defines the structure of the DB
 
 ## Authentication
 
@@ -84,11 +85,52 @@ curl -H "Authorization: Bearer <token>" http://localhost:8080/api/boats
 curl -H "Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJvd3RDaGFsbGVuZ2UiLCJzdWIiOiJ1c2VyIiwiZXhwIjoxNzU1MTIwMjEwLCJpYXQiOjE3NTUwODQyMTAsInNjb3BlIjoiUk9MRV9VU0VSIn0.mSKsqkhc3PSOxajUo3ZIAM9PqyAphwgi9P-v0wN7Uo-xtp1lCpoyjHuEL935gTam_zIoqpCK_WzXEE02mB1PvsqPsLsa0Mfz6ppctKkR8DpqUCl91tu8LFq-pwzGg-aX_jm9fvNi4YkeF2oidUAqpSyIpZi4_s1mEyR5TmckMeIBCVzILlR7H8hWJ8xmEg_RCqmjClsYMOoIr4R8GzrG2T0BhPS7sgJXbhHsTkXOl0w5fJa1QVdEy7ehUnPxz6rIxQ_39LBGoRL9vEGzWY8UJ4SypPmg2IvFPy6b4a1DhWLk0BWaEM4vyydyRge6wJ4YIQ8ofU3TCvLMHAXnDuMDUw" http://localhost:8080/api/boats
 ```
 
+[
+{
+"id": 1,
+"name": "Sea Explorer",
+"description": "A sturdy sailboat for coastal trips",
+"capacity": 8,
+"size": 30,
+"type": "SAILBOAT",
+"createdAt": "13/08/2025",
+"updatedAt": "13/08/2025"
+},
+{
+"id": 2,
+"name": "Wave Rider",
+"description": "Fast motorboat with great acceleration",
+"capacity": 4,
+"size": 20,
+"type": "MOTORBOAT",
+"createdAt": "13/08/2025",
+"updatedAt": "13/08/2025"
+}
+]
+
+## Postman Collection
+
+You can find a Postman collection for testing the API at:
+src/main/resources/Boat API.postman_collection.json
+
 ## Running Tests
 
 ```sh 
 mvn test
 ```
+
+## Running the Project with Docker
+1. Build the Docker Image
+   From the root of the project (where the Dockerfile is located), run:
+```sh
+docker build -t otp-challenge .
+```
+2. Run the Docker Container
+   Run the container and map port 8080 from the container to your host:
+```sh
+docker run -p 8080:8080 otp-challenge
+```
+The backend will be available at `http://localhost:8080`.
 
 ## Notes
 

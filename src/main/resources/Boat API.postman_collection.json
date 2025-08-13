@@ -1,0 +1,244 @@
+{
+	"info": {
+		"_postman_id": "00baf574-4fc4-4c60-8271-20c0277fc2c0",
+		"name": "Boat API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth - Login",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "pass",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Boats",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJvd3RDaGFsbGVuZ2UiLCJzdWIiOiJ1c2VyIiwiZXhwIjoxNzU1MTE4MTc1LCJpYXQiOjE3NTUwODIxNzUsInNjb3BlIjoiUk9MRV9VU0VSIn0.o2KaluUFdzooLIy2OD2MPKjpLDje7KOL93UmXKNB-xRTCsahE7eWU8lJWGr7eOjkFnyWOz9hiB48i0IempURb4M_ok3u24UR1DP68aPukLnIlVCy_LwLUcMNDOfP30sYkeNrYfkg9VuyfbXrVIxsu1UcSMPoETDT8WOY7GWezxKk9Y4dcjZKWj4GBTpWmmHDBmynIzSnCFDB3fcXn0DryV0QWseZILUM57ZxVeEvsy8hq4J9nw3xC52jY5lnNS8SHN7KJP3O9x9nbboFA4va09l4X1l6OFliXdgN27j6DFdCxF3Yx8a55ZPOMsNS6kgcjWt0JuxfjPFzhgY2NjUU3g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/boats",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Boat By ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJvd3RDaGFsbGVuZ2UiLCJzdWIiOiJ1c2VyIiwiZXhwIjoxNzU1MTE4MTc1LCJpYXQiOjE3NTUwODIxNzUsInNjb3BlIjoiUk9MRV9VU0VSIn0.o2KaluUFdzooLIy2OD2MPKjpLDje7KOL93UmXKNB-xRTCsahE7eWU8lJWGr7eOjkFnyWOz9hiB48i0IempURb4M_ok3u24UR1DP68aPukLnIlVCy_LwLUcMNDOfP30sYkeNrYfkg9VuyfbXrVIxsu1UcSMPoETDT8WOY7GWezxKk9Y4dcjZKWj4GBTpWmmHDBmynIzSnCFDB3fcXn0DryV0QWseZILUM57ZxVeEvsy8hq4J9nw3xC52jY5lnNS8SHN7KJP3O9x9nbboFA4va09l4X1l6OFliXdgN27j6DFdCxF3Yx8a55ZPOMsNS6kgcjWt0JuxfjPFzhgY2NjUU3g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/boats/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"boats",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Boat",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJvd3RDaGFsbGVuZ2UiLCJzdWIiOiJ1c2VyIiwiZXhwIjoxNzU1MTE4MTc1LCJpYXQiOjE3NTUwODIxNzUsInNjb3BlIjoiUk9MRV9VU0VSIn0.o2KaluUFdzooLIy2OD2MPKjpLDje7KOL93UmXKNB-xRTCsahE7eWU8lJWGr7eOjkFnyWOz9hiB48i0IempURb4M_ok3u24UR1DP68aPukLnIlVCy_LwLUcMNDOfP30sYkeNrYfkg9VuyfbXrVIxsu1UcSMPoETDT8WOY7GWezxKk9Y4dcjZKWj4GBTpWmmHDBmynIzSnCFDB3fcXn0DryV0QWseZILUM57ZxVeEvsy8hq4J9nw3xC52jY5lnNS8SHN7KJP3O9x9nbboFA4va09l4X1l6OFliXdgN27j6DFdCxF3Yx8a55ZPOMsNS6kgcjWt0JuxfjPFzhgY2NjUU3g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Titanic\",\n  \"description\": \"Large passenger ship\",\n  \"capacity\": 1000,\n  \"size\": 269,\n  \"type\": \"SAILBOAT\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/boats",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Boat",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJvd3RDaGFsbGVuZ2UiLCJzdWIiOiJ1c2VyIiwiZXhwIjoxNzU1MTE4MTc1LCJpYXQiOjE3NTUwODIxNzUsInNjb3BlIjoiUk9MRV9VU0VSIn0.o2KaluUFdzooLIy2OD2MPKjpLDje7KOL93UmXKNB-xRTCsahE7eWU8lJWGr7eOjkFnyWOz9hiB48i0IempURb4M_ok3u24UR1DP68aPukLnIlVCy_LwLUcMNDOfP30sYkeNrYfkg9VuyfbXrVIxsu1UcSMPoETDT8WOY7GWezxKk9Y4dcjZKWj4GBTpWmmHDBmynIzSnCFDB3fcXn0DryV0QWseZILUM57ZxVeEvsy8hq4J9nw3xC52jY5lnNS8SHN7KJP3O9x9nbboFA4va09l4X1l6OFliXdgN27j6DFdCxF3Yx8a55ZPOMsNS6kgcjWt0JuxfjPFzhgY2NjUU3g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Updated Name\",\n  \"description\": \"Updated description\",\n  \"capacity\": 1200,\n  \"size\": 300,\n  \"type\": \"MOTORBOAT\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/boats/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"boats",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Boat",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJvd3RDaGFsbGVuZ2UiLCJzdWIiOiJ1c2VyIiwiZXhwIjoxNzU1MTE4MTc1LCJpYXQiOjE3NTUwODIxNzUsInNjb3BlIjoiUk9MRV9VU0VSIn0.o2KaluUFdzooLIy2OD2MPKjpLDje7KOL93UmXKNB-xRTCsahE7eWU8lJWGr7eOjkFnyWOz9hiB48i0IempURb4M_ok3u24UR1DP68aPukLnIlVCy_LwLUcMNDOfP30sYkeNrYfkg9VuyfbXrVIxsu1UcSMPoETDT8WOY7GWezxKk9Y4dcjZKWj4GBTpWmmHDBmynIzSnCFDB3fcXn0DryV0QWseZILUM57ZxVeEvsy8hq4J9nw3xC52jY5lnNS8SHN7KJP3O9x9nbboFA4va09l4X1l6OFliXdgN27j6DFdCxF3Yx8a55ZPOMsNS6kgcjWt0JuxfjPFzhgY2NjUU3g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/boats/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"boats",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
