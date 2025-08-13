@@ -13,7 +13,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,14 +33,26 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.List;
 
-
+/**
+ * Security configuration for the application.
+ * This class configures Spring Security to handle JWT authentication,
+ * CORS, and session management.
+ * It also sets up an in-memory user store for initial authentication.
+ *
+ * @author Manuel Bouzas
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
     private final RSAPublicKey key;
     private final RSAPrivateKey priv;
-
+    /**
+     * Constructor to inject the RSA keys used for JWT signing and verification.
+     *
+     * @param key  the public key used to verify JWT signatures
+     * @param priv the private key used to sign JWT tokens
+     */
     public SecurityConfiguration(
             @Value("${jwt.public.key}") RSAPublicKey key,
             @Value("${jwt.private.key}") RSAPrivateKey priv
@@ -50,6 +61,15 @@ public class SecurityConfiguration {
         this.priv = priv;
     }
 
+    /**
+     * Configures the security filter chain for the application.
+     * This method sets up CORS, CSRF protection, HTTP Basic authentication,
+     * JWT resource server configuration, and session management.
+     *
+     * @param http the HttpSecurity object to configure
+     * @return the configured SecurityFilterChain
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -85,6 +105,12 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+    /**
+     * Provides an in-memory user details service for initial authentication.
+     * This is used to authenticate users before JWT is issued.
+     *
+     * @return UserDetailsService with a single user
+     */
     @Bean
     public UserDetailsService users() {
         return new InMemoryUserDetailsManager(
@@ -105,6 +131,12 @@ public class SecurityConfiguration {
         return NimbusJwtDecoder.withPublicKey(this.key).build();
     }
 
+    /**
+     * Configures the JWT encoder to sign tokens using the provided private key.
+     * This is used to create JWT tokens for authenticated users.
+     *
+     * @return JwtEncoder configured with the RSA private key
+     */
     @Bean
     public JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(this.key).privateKey(this.priv).build();
@@ -112,6 +144,12 @@ public class SecurityConfiguration {
         return new NimbusJwtEncoder(jwks);
     }
 
+    /**
+     * Configures the JWT authentication converter to extract authorities from JWT tokens.
+     * This converter is used to map JWT claims to Spring Security authorities.
+     *
+     * @return JwtAuthenticationConverter configured with a custom JwtGrantedAuthoritiesConverter
+     */
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();

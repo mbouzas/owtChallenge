@@ -9,6 +9,14 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Filter to modify HTTP headers for H2 Console access.
+ * Specifically, it allows framing the H2 Console by setting the Content-Security-Policy header.
+ * This is necessary because the H2 Console uses frames and the default X-Frame-Options header
+ * would block it in most browsers.
+ *
+ * @author Manuel Bouzas
+ */
 @Component
 public class H2ConsoleFrameOptionsFilter extends HttpFilter {
     @Override

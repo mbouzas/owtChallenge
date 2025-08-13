@@ -14,18 +14,45 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for authentication.
+ * Handles JWT token generation for authenticated users.
+ * Provides a single endpoint to generate a token based on user credentials.
+ * This controller uses Spring Security's JwtEncoder to create JWT tokens
+ *
+ * @author Manuel
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-
+    /**
+     * JwtEncoder is used to encode JWT tokens.
+     */
     private final JwtEncoder encoder;
 
+    /**
+     * Constructor to inject the JwtEncoder dependency.
+     *
+     * @param encoder the JwtEncoder used to create JWT tokens
+     */
     public AuthController(JwtEncoder encoder) {
         this.encoder = encoder;
     }
-    // Define JwtResponse as a static record
+
+    /**
+     * Response object containing the JWT token.
+     * This record is used to encapsulate the JWT token returned by the authentication endpoint.
+     *
+     * @param token the JWT token as a String
+     */
     public static record JwtResponse(String token) {}
 
+    /**
+     * Authenticates a user and generates a JWT token.
+     *
+     * @param authentication the authentication object containing user credentials and authorities
+     * @return ResponseEntity containing the JWT token
+     */
     @PostMapping("")
     public ResponseEntity<JwtResponse> auth(Authentication authentication) {
         Instant now = Instant.now();
