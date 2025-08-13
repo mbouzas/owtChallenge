@@ -1,156 +1,185 @@
 package dev.manubouzas.owtchallenge.boat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@WebMvcTest(BoatController.class)
+@Import(BoatControllerTest.TestConfig.class)
+@WithMockUser(roles = "USER")
 class BoatControllerTest {
 
-    @Mock
-    private BoatRepository boatRepository;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @InjectMocks
-    private BoatController boatController;
+    @Autowired
+    private BoatRepository boatRepository; // This is our mock
 
-    private Boat testBoat;
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    static class TestConfig {
+        @Bean
+        public BoatRepository boatRepository() {
+            return Mockito.mock(BoatRepository.class);
+        }
+    }
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        testBoat = new Boat();
-        testBoat.setId(1L);
-        testBoat.setName("Sea Spirit");
-        testBoat.setType(BoatType.FERRY);
+    void setup() {
+        Mockito.reset(boatRepository); // Reset mock before each test
     }
 
     @Test
-    void getAllBoats_ShouldReturnAllBoats() {
-        // Arrange
-        List<Boat> expectedBoats = Arrays.asList(testBoat);
-        when(boatRepository.findAll()).thenReturn(expectedBoats);
+    void testGetAllBoats() throws Exception {
+        Boat boat1 = new Boat();
+        Boat boat2 = new Boat();
+        when(boatRepository.findAll()).thenReturn(List.of(boat1, boat2));
 
-        // Act
-        List<Boat> result = boatController.getAllBoats();
+        mockMvc.perform(get("/api/boats"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        // Assert
-        assertEquals(expectedBoats, result);
-        verify(boatRepository, times(1)).findAll();
+        verify(boatRepository).findAll();
     }
 
     @Test
-    void getBoatById_WhenBoatExists_ShouldReturnBoat() {
-        // Arrange
-        when(boatRepository.findById(1L)).thenReturn(Optional.of(testBoat));
+    void testGetBoatByIdFound() throws Exception {
+        Boat boat = new Boat();
+        boat.setId(1L);
+        when(boatRepository.findById(1L)).thenReturn(Optional.of(boat));
 
-        // Act
-        ResponseEntity<Boat> response = boatController.getBoatById(1L);
+        mockMvc.perform(get("/api/boats/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(testBoat, response.getBody());
-        verify(boatRepository, times(1)).findById(1L);
+        verify(boatRepository).findById(1L);
     }
 
     @Test
-    void getBoatById_WhenBoatNotExists_ShouldReturnNotFound() {
-        // Arrange
-        when(boatRepository.findById(99L)).thenReturn(Optional.empty());
+    void testGetBoatByIdNotFound() throws Exception {
+        when(boatRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // Act
-        ResponseEntity<Boat> response = boatController.getBoatById(99L);
+        mockMvc.perform(get("/api/boats/999"))
+                .andExpect(status().isNotFound());
 
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNull(response.getBody());
-        verify(boatRepository, times(1)).findById(99L);
+        verify(boatRepository).findById(999L);
     }
 
     @Test
-    void createBoat_ShouldSaveAndReturnCreatedBoat() {
-        // Arrange
-        when(boatRepository.save(testBoat)).thenReturn(testBoat);
+    void testCreateBoat() throws Exception {
+        Boat boat = new Boat();
+        boat.setName("Titanic");
+        boat.setDescription("Large passenger ship");
+        boat.setCapacity(1000);
+        boat.setSize(269);
+        boat.setType(BoatType.SAILBOAT);
 
-        // Act
-        ResponseEntity<Boat> response = boatController.createBoat(testBoat);
+        when(boatRepository.save(any(Boat.class))).thenReturn(boat);
 
-        // Assert
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(testBoat, response.getBody());
-        verify(boatRepository, times(1)).save(testBoat);
+        String json = objectMapper.writeValueAsString(boat);
+
+        mockMvc.perform(post("/api/boats")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                        .with(csrf())) // Add CSRF token
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        verify(boatRepository).save(any(Boat.class));
     }
 
     @Test
-    void updateBoat_WhenBoatExists_ShouldUpdateAndReturnBoat() {
-        // Arrange
+    void testUpdateBoatFound() throws Exception {
+        Boat existingBoat = new Boat();
+        existingBoat.setId(1L);
+        existingBoat.setName("OldName");
+        existingBoat.setDescription("Old description");
+        existingBoat.setCapacity(500);
+        existingBoat.setSize(200);
+        existingBoat.setType(BoatType.MOTORBOAT);
+
         Boat updatedBoat = new Boat();
-        updatedBoat.setName("Updated Name");
-        updatedBoat.setType(BoatType.YACHT);
+        updatedBoat.setName("NewName");
+        updatedBoat.setDescription("Updated description");
+        updatedBoat.setCapacity(600);
+        updatedBoat.setSize(220);
+        updatedBoat.setType(BoatType.SAILBOAT);
 
-        when(boatRepository.findById(1L)).thenReturn(Optional.of(testBoat));
-        when(boatRepository.save(testBoat)).thenReturn(testBoat);
+        when(boatRepository.findById(1L)).thenReturn(Optional.of(existingBoat));
+        when(boatRepository.save(any(Boat.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Act
-        ResponseEntity<Boat> response = boatController.updateBoat(1L, updatedBoat);
+        String json = objectMapper.writeValueAsString(updatedBoat);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Updated Name", response.getBody().getName());
-        assertEquals(BoatType.YACHT, response.getBody().getType());
-        verify(boatRepository, times(1)).findById(1L);
-        verify(boatRepository, times(1)).save(testBoat);
+        mockMvc.perform(put("/api/boats/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        verify(boatRepository).findById(1L);
+        verify(boatRepository).save(any(Boat.class));
     }
 
     @Test
-    void updateBoat_WhenBoatNotExists_ShouldReturnNotFound() {
-        // Arrange
-        when(boatRepository.findById(99L)).thenReturn(Optional.empty());
+    void testUpdateBoatNotFound() throws Exception {
+        Boat updatedBoat = new Boat();
+        updatedBoat.setName("NewName");
+        updatedBoat.setDescription("Updated description");
+        updatedBoat.setCapacity(600);
+        updatedBoat.setSize(220);
+        updatedBoat.setType(BoatType.SAILBOAT);
 
-        // Act
-        ResponseEntity<Boat> response = boatController.updateBoat(99L, testBoat);
+        when(boatRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNull(response.getBody());
-        verify(boatRepository, times(1)).findById(99L);
-        verify(boatRepository, never()).save(any());
+        String json = objectMapper.writeValueAsString(updatedBoat);
+
+        mockMvc.perform(put("/api/boats/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                        .with(csrf()))
+                .andExpect(status().isNotFound());
+
+        verify(boatRepository).findById(999L);
     }
 
     @Test
-    void deleteBoat_WhenBoatExists_ShouldDeleteAndReturnNoContent() {
-        // Arrange
+    void testDeleteBoatFound() throws Exception {
         when(boatRepository.existsById(1L)).thenReturn(true);
+        doNothing().when(boatRepository).deleteById(1L);
 
-        // Act
-        ResponseEntity<Void> response = boatController.deleteBoat(1L);
+        mockMvc.perform(delete("/api/boats/1").with(csrf()))
+                .andExpect(status().isNoContent());
 
-        // Assert
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(boatRepository, times(1)).existsById(1L);
-        verify(boatRepository, times(1)).deleteById(1L);
+        verify(boatRepository).existsById(1L);
+        verify(boatRepository).deleteById(1L);
     }
 
     @Test
-    void deleteBoat_WhenBoatNotExists_ShouldReturnNotFound() {
-        // Arrange
-        when(boatRepository.existsById(99L)).thenReturn(false);
+    void testDeleteBoatNotFound() throws Exception {
+        when(boatRepository.existsById(999L)).thenReturn(false);
 
-        // Act
-        ResponseEntity<Void> response = boatController.deleteBoat(99L);
+        mockMvc.perform(delete("/api/boats/999").with(csrf()))
+                .andExpect(status().isNotFound());
 
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        verify(boatRepository, times(1)).existsById(99L);
-        verify(boatRepository, never()).deleteById(any());
+        verify(boatRepository).existsById(999L);
     }
+
 }

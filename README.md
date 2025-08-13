@@ -7,7 +7,7 @@ A simple REST API for managing boats, secured with JWT authentication using Spri
 - CRUD operations for boats
 - JWT-based authentication
 - Spring Security integration
-- In-memory user for demo
+- In-memory user for demo (username: `user`, password: `pass`)
 - H2 in-memory database
 
 ## Requirements
@@ -42,14 +42,15 @@ A simple REST API for managing boats, secured with JWT authentication using Spri
 
 1. **Obtain a JWT token**
 
-   Send a POST request to `/auth/login` with the default user credentials:
+   Send a POST request to `/api/auth` with the default user credentials:
 
-    - **Username:** `user`
-    - **Password:** `password`
+   Authentication:
+   Basic Authentication
 
    Example using `curl`:
    ```sh
-   curl -X POST "http://localhost:8080/auth/login" -d "username=user&password=password"
+   curl -X POST "http://localhost:8080/api/auth" \
+     -H "Authorization: Basic $(echo -n "user:pass" | base64)"
    ```
 
    Response:
@@ -79,6 +80,8 @@ _All `/api/boats` endpoints require a valid JWT token._
 
 ```sh
 curl -H "Authorization: Bearer <token>" http://localhost:8080/api/boats
+
+curl -H "Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJvd3RDaGFsbGVuZ2UiLCJzdWIiOiJ1c2VyIiwiZXhwIjoxNzU1MTIwMjEwLCJpYXQiOjE3NTUwODQyMTAsInNjb3BlIjoiUk9MRV9VU0VSIn0.mSKsqkhc3PSOxajUo3ZIAM9PqyAphwgi9P-v0wN7Uo-xtp1lCpoyjHuEL935gTam_zIoqpCK_WzXEE02mB1PvsqPsLsa0Mfz6ppctKkR8DpqUCl91tu8LFq-pwzGg-aX_jm9fvNi4YkeF2oidUAqpSyIpZi4_s1mEyR5TmckMeIBCVzILlR7H8hWJ8xmEg_RCqmjClsYMOoIr4R8GzrG2T0BhPS7sgJXbhHsTkXOl0w5fJa1QVdEy7ehUnPxz6rIxQ_39LBGoRL9vEGzWY8UJ4SypPmg2IvFPy6b4a1DhWLk0BWaEM4vyydyRge6wJ4YIQ8ofU3TCvLMHAXnDuMDUw" http://localhost:8080/api/boat
 ```
 
 ## Running Tests
