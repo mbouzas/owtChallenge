@@ -19,8 +19,8 @@ A simple REST API for managing boats, secured with JWT authentication using Spri
 
 1. **Clone the repository**
    ```sh
-   git clone https://github.com/yourusername/boat-api.git
-   cd boat-api
+   git clone https://github.com/mbouzas/owtChallenge.git
+   cd owtChallenge
     ```
 
 2. **Build the project**
@@ -120,6 +120,10 @@ mvn test
 ```
 
 ## Running the Project with Docker
+
+Prerequisites:
+- Docker installed and running
+
 1. Build the Docker Image
    From the root of the project (where the Dockerfile is located), run:
 ```sh
